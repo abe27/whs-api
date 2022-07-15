@@ -1,9 +1,9 @@
 package main
 
 import (
-	"log"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/abe27/bugtracker/api/controllers"
 	"github.com/abe27/bugtracker/api/models"
@@ -23,6 +23,7 @@ func SetupRoutes(app *fiber.App) {
 	r.Get("/hello", controllers.Hello)
 	u := app.Group("/api/v1/member")
 	u.Post("/register", controllers.Register)
+	u.Post("/login", controllers.Login)
 }
 
 func init() {
@@ -32,9 +33,13 @@ func init() {
 		panic("Error loading .env file")
 	}
 
-	dns := "host=" + os.Getenv("DBHOST") + " user=" + os.Getenv("DBUSER") + " password=" + os.Getenv("DBPASSWORD") + " dbname=" + os.Getenv("DBNAME") + " port=" + os.Getenv("DBPORT") + " sslmode=" + os.Getenv("SSLMODE") + " TimeZone=" + os.Getenv("TZNAME") + ""
+	// dns := "host=" + os.Getenv("DBHOST") + " user=" + os.Getenv("DBUSER") + " password=" + os.Getenv("DBPASSWORD") + " dbname=" + os.Getenv("DBNAME") + " port=" + os.Getenv("DBPORT") + " sslmode=" + os.Getenv("SSLMODE") + " TimeZone=" + os.Getenv("TZNAME") + ""
+	dns := "host=" + os.Getenv("DBHOST") + " user=" + os.Getenv("DBUSER") + " dbname=" + os.Getenv("DBNAME") + " port=" + os.Getenv("DBPORT") + " sslmode=" + os.Getenv("SSLMODE") + " TimeZone=" + os.Getenv("TZNAME") + ""
 	services.DBConn, err = gorm.Open(postgres.Open(dns), &gorm.Config{
 		SkipDefaultTransaction: true,
+		NowFunc: func() time.Time {
+			return time.Now().Local()
+		},
 		NamingStrategy: schema.NamingStrategy{
 			TablePrefix:   "tbt_", // table name prefix, table for `User` would be `t_users`
 			SingularTable: false,  // use singular table name, table for `User` would be `user` with this option enabled
@@ -63,5 +68,5 @@ func main() {
 	app.Use(requestid.New())
 	app.Use(logger.New())
 	SetupRoutes(app)
-	log.Fatal(app.Listen(":3000"))
+	app.Listen(":3000")
 }
