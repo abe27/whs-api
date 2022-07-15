@@ -49,8 +49,11 @@ func Login(c *fiber.Ctx) error {
 		r.Data = err
 		return c.Status(fiber.StatusNotFound).JSON(r)
 	}
-	/// check password hash
+
 	passwd := c.FormValue("password")
+	fmt.Println(passwd + " != " + u.Password)
+	fmt.Println(len(passwd))
+	/// check password HashPassword
 	isMatch := services.CheckPasswordHash(passwd, u.Password)
 	fmt.Println(isMatch)
 	if !isMatch {
@@ -60,9 +63,6 @@ func Login(c *fiber.Ctx) error {
 		r.Data = nil
 		return c.Status(fiber.StatusUnauthorized).JSON(r)
 	}
-
-	fmt.Println(passwd + " != " + u.Password)
-	fmt.Println(len(passwd))
 	r.ID = services.Nanoid()
 	r.Success = true
 	r.Message = "Login"
