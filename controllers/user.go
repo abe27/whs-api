@@ -53,19 +53,19 @@ func Login(c *fiber.Ctx) error {
 	passwd := c.FormValue("password")
 	isMatch := services.CheckPasswordHash(passwd, u.Password)
 	fmt.Println(isMatch)
-	// if !isMatch {
-	// 	r.ID = services.Nanoid()
-	// 	r.Success = false
-	// 	r.Message = "Please check your password."
-	// 	r.Data = nil
-	// 	return c.Status(fiber.StatusUnauthorized).JSON(r)
-	// }
+	if !isMatch {
+		r.ID = services.Nanoid()
+		r.Success = false
+		r.Message = "Please check your password."
+		r.Data = nil
+		return c.Status(fiber.StatusUnauthorized).JSON(r)
+	}
 
 	fmt.Println(passwd + " != " + u.Password)
 	fmt.Println(len(passwd))
 	r.ID = services.Nanoid()
 	r.Success = true
-	r.Message = ""
+	r.Message = "Login"
 	r.Data = u
 	return c.Status(fiber.StatusOK).JSON(r)
 }
