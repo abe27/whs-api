@@ -34,7 +34,13 @@ func init() {
 	}
 
 	// dns := "host=" + os.Getenv("DBHOST") + " user=" + os.Getenv("DBUSER") + " password=" + os.Getenv("DBPASSWORD") + " dbname=" + os.Getenv("DBNAME") + " port=" + os.Getenv("DBPORT") + " sslmode=" + os.Getenv("SSLMODE") + " TimeZone=" + os.Getenv("TZNAME") + ""
-	dns := "host=" + os.Getenv("DBHOST") + " user=" + os.Getenv("DBUSER") + " dbname=" + os.Getenv("DBNAME") + " port=" + os.Getenv("DBPORT") + " sslmode=" + os.Getenv("SSLMODE") + " TimeZone=" + os.Getenv("TZNAME") + ""
+	dns := "host=" + os.Getenv("DBHOST") +
+		" user=" + os.Getenv("DBUSER") +
+		" password=" + os.Getenv("DBPASSWORD") +
+		" dbname=" + os.Getenv("DBNAME") +
+		" port=" + os.Getenv("DBPORT") +
+		" sslmode=" + os.Getenv("SSLMODE") +
+		" TimeZone=" + os.Getenv("TZNAME") + ""
 	services.DBConn, err = gorm.Open(postgres.Open(dns), &gorm.Config{
 		SkipDefaultTransaction: true,
 		NowFunc: func() time.Time {
